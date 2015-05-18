@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestChannel(t *testing.T) {
+func TestWaitChannel(t *testing.T) {
 	var waiter Waiter
 	waiter.Add(10)
 	for i := 0; i < 10; i++ {
@@ -15,9 +15,9 @@ func TestChannel(t *testing.T) {
 		}()
 	}
 	timer := time.NewTimer(time.Second)
-	channel := waiter.Channel()
+	waitch := waiter.WaitChannel()
 	select {
-	case <-channel:
+	case <-waitch:
 		return
 	case <-timer.C:
 		t.Error("Timed out without Waiter.Channel() being signaled")

@@ -5,25 +5,26 @@ import (
 )
 
 // Waiter is a sync.WaitGroup
-// but it also has a Channel() method for use with select{}
+// but it also has a WaitChannel() method for use with select{}
 type Waiter struct {
 	sync.WaitGroup
 }
 
-// Waiter.Channel() returns a channel that can be used with select{}
-// the channel is closed when WaitGroup.Wait() is satisfied
+// Waiter.WaitChannel() returns a channel that can be used with select{}
+// the channel is closed as soon as WaitGroup.Wait() is satisfied
+// so don't call it before you're ready
 //
 // ex:
 //		var w syncutil.Waiter
 //		...
-//		wch := w.Channel()
+//		wch := w.WaitChannel()
 //		select {
 //			case <-wch: // waiter done
 //				...
 //			case <-input:
 //			...
 //		}
-func (w *Waiter) Channel() (ch chan int) {
+func (w *Waiter) WaitChannel() (ch chan int) {
 	ch = make(chan int)
 	go func() {
 		w.Wait()  // wait for WaitGroup
